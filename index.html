@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SuperInstaller – Automated Educational Software Deployment</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #0d1117;
+  --surface: #161b22;
+  --surface2: #1c2333;
+  --border: #30363d;
+  --accent: #58a6ff;
+  --accent2: #3fb950;
+  --warn: #f0883e;
+  --muted: #8b949e;
+  --text: #e6edf3;
+  --text2: #c9d1d9;
+  --tag-bg: #1f2937;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'DM Sans',sans-serif;
+  font-size:15px;
+  line-height:1.7;
+  overflow-x:hidden;
+}
+
+/* ── HERO ── */
+.hero{
+  position:relative;
+  min-height:92vh;
+  display:flex;align-items:center;
+  padding:80px 5vw 60px;
+  overflow:hidden;
+}
+.hero-grid{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(88,166,255,.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(88,166,255,.04) 1px,transparent 1px);
+  background-size:40px 40px;
+  animation:gridDrift 40s linear infinite;
+}
+@keyframes gridDrift{to{background-position:40px 40px;}}
+.hero-glow{
+  position:absolute;top:-200px;right:-200px;
+  width:700px;height:700px;border-radius:50%;
+  background:radial-gradient(circle,rgba(88,166,255,.12) 0%,transparent 70%);
+  pointer-events:none;
+}
+.hero-glow2{
+  position:absolute;bottom:-200px;left:-100px;
+  width:500px;height:500px;border-radius:50%;
+  background:radial-gradient(circle,rgba(63,185,80,.08) 0%,transparent 70%);
+  pointer-events:none;
+}
+.hero-inner{position:relative;z-index:1;max-width:900px;}
+.badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(88,166,255,.1);
+  border:1px solid rgba(88,166,255,.25);
+  color:var(--accent);
+  font-family:'DM Mono',monospace;font-size:11px;
+  padding:5px 14px;border-radius:20px;
+  margin-bottom:28px;letter-spacing:.08em;
+  animation:fadeDown .6s ease both;
+}
+.badge::before{content:'●';font-size:8px;color:#3fb950;}
+.hero h1{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(2.4rem,6vw,4.2rem);
+  font-weight:800;
+  line-height:1.08;
+  margin-bottom:20px;
+  animation:fadeDown .7s .1s ease both;
+}
+.hero h1 span{
+  background:linear-gradient(135deg,var(--accent),#79c0ff);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.hero-sub{
+  font-size:1.1rem;color:var(--text2);
+  max-width:620px;margin-bottom:36px;
+  animation:fadeDown .7s .2s ease both;
+}
+.meta-row{
+  display:flex;flex-wrap:wrap;gap:12px;
+  margin-bottom:40px;
+  animation:fadeDown .7s .3s ease both;
+}
+.meta-chip{
+  display:flex;align-items:center;gap:7px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:8px;padding:7px 14px;
+  font-size:12.5px;color:var(--text2);
+}
+.meta-chip .icon{font-size:14px;}
+.hero-btns{
+  display:flex;gap:14px;flex-wrap:wrap;
+  animation:fadeDown .7s .4s ease both;
+}
+.btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:11px 24px;border-radius:8px;
+  font-family:'Syne',sans-serif;font-weight:600;font-size:13.5px;
+  text-decoration:none;cursor:pointer;border:none;
+  transition:all .2s;
+}
+.btn-primary{background:var(--accent);color:#0d1117;}
+.btn-primary:hover{background:#79c0ff;transform:translateY(-1px);}
+.btn-ghost{
+  background:transparent;color:var(--text2);
+  border:1px solid var(--border);
+}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent);}
+
+/* ── SECTIONS ── */
+.section{padding:80px 5vw;max-width:1100px;margin:0 auto;}
+.section-label{
+  font-family:'DM Mono',monospace;font-size:11px;
+  letter-spacing:.15em;color:var(--accent);
+  text-transform:uppercase;margin-bottom:10px;
+}
+.section-title{
+  font-family:'Syne',sans-serif;font-size:clamp(1.6rem,3vw,2.2rem);
+  font-weight:700;margin-bottom:36px;color:var(--text);
+}
+.divider{
+  height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);
+  margin:0 5vw;
+}
+
+/* ── PROBLEM TABLE ── */
+.problem-grid{display:grid;gap:14px;}
+.problem-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:20px 24px;
+  display:grid;grid-template-columns:1fr 1fr;gap:16px;
+  transition:border-color .2s;
+}
+.problem-card:hover{border-color:rgba(88,166,255,.4);}
+.prob-label{
+  font-family:'DM Mono',monospace;font-size:10px;
+  letter-spacing:.1em;text-transform:uppercase;
+  margin-bottom:6px;
+}
+.prob-label.red{color:#f85149;}
+.prob-label.green{color:var(--accent2);}
+.prob-text{font-size:13.5px;color:var(--text2);line-height:1.5;}
+.prob-arrow{
+  display:none;
+  font-size:20px;color:var(--muted);
+  align-self:center;
+}
+@media(min-width:600px){
+  .problem-card{grid-template-columns:1fr auto 1fr;}
+  .prob-arrow{display:block;}
+}
+
+/* ── HOW IT WORKS ── */
+.steps{display:grid;gap:0;}
+.step{
+  display:grid;grid-template-columns:64px 1fr;
+  gap:0 24px;position:relative;
+}
+.step:not(:last-child) .step-line{
+  position:absolute;left:31px;top:64px;bottom:0;
+  width:2px;background:var(--border);
+}
+.step-num{
+  width:64px;height:64px;border-radius:50%;
+  background:var(--surface2);border:2px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Syne',sans-serif;font-weight:700;font-size:1.1rem;
+  color:var(--accent);flex-shrink:0;z-index:1;
+}
+.step-body{padding:16px 0 40px;}
+.step-title{
+  font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;
+  color:var(--text);margin-bottom:6px;
+}
+.step-desc{font-size:13.5px;color:var(--text2);}
+.code-pill{
+  display:inline-block;
+  background:#161b22;border:1px solid var(--border);
+  font-family:'DM Mono',monospace;font-size:11.5px;
+  color:#e2a96e;padding:3px 10px;border-radius:5px;
+  margin-top:6px;
+}
+.feature-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px;}
+.chip{
+  background:var(--tag-bg);border:1px solid var(--border);
+  border-radius:6px;padding:3px 11px;
+  font-family:'DM Mono',monospace;font-size:11px;
+  color:var(--accent2);
+}
+
+/* ── SOFTWARE TABLES ── */
+.sw-tabs{display:flex;gap:0;margin-bottom:24px;border-bottom:2px solid var(--border);}
+.sw-tab{
+  padding:10px 22px;font-family:'Syne',sans-serif;font-weight:600;
+  font-size:13px;color:var(--muted);cursor:pointer;
+  border-bottom:2px solid transparent;margin-bottom:-2px;
+  transition:all .2s;
+}
+.sw-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+.sw-panel{display:none;}
+.sw-panel.active{display:block;}
+table{width:100%;border-collapse:collapse;}
+thead tr{background:var(--surface2);}
+th{
+  text-align:left;padding:11px 16px;
+  font-family:'DM Mono',monospace;font-size:11px;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--muted);
+  border-bottom:1px solid var(--border);
+}
+tbody tr{transition:background .15s;}
+tbody tr:hover{background:var(--surface2);}
+td{
+  padding:10px 16px;font-size:13.5px;
+  border-bottom:1px solid rgba(48,54,61,.6);
+  color:var(--text2);
+}
+td:first-child{color:var(--text);font-weight:500;}
+.arch{
+  display:inline-block;font-family:'DM Mono',monospace;font-size:11px;
+  padding:2px 9px;border-radius:4px;
+}
+.arch.both{background:rgba(88,166,255,.1);color:var(--accent);}
+.arch.x32{background:rgba(240,136,62,.1);color:var(--warn);}
+.arch.x64{background:rgba(63,185,80,.1);color:var(--accent2);}
+.manual-note{font-size:11px;color:var(--muted);font-style:italic;}
+
+/* ── TESTED OS ── */
+.os-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;}
+.os-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:10px;padding:16px 20px;
+}
+.os-name{
+  font-family:'Syne',sans-serif;font-weight:600;font-size:13.5px;
+  margin-bottom:10px;color:var(--text);
+}
+.os-badges{display:flex;gap:8px;flex-wrap:wrap;}
+.os-badge{
+  font-size:11px;padding:3px 9px;border-radius:5px;
+  font-family:'DM Mono',monospace;
+}
+.os-badge.ok{background:rgba(63,185,80,.1);color:var(--accent2);}
+.os-badge.warn{background:rgba(240,136,62,.1);color:var(--warn);}
+
+/* ── DEVOPS CONCEPTS ── */
+.concepts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;}
+.concept-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:12px;padding:22px;
+  transition:border-color .2s,transform .2s;
+}
+.concept-card:hover{border-color:var(--accent);transform:translateY(-2px);}
+.concept-icon{font-size:24px;margin-bottom:10px;}
+.concept-title{
+  font-family:'Syne',sans-serif;font-weight:700;font-size:14px;
+  color:var(--accent);margin-bottom:6px;
+}
+.concept-desc{font-size:13px;color:var(--text2);}
+
+/* ── WARN BOX ── */
+.warn-box{
+  background:rgba(240,136,62,.07);
+  border:1px solid rgba(240,136,62,.3);
+  border-radius:10px;padding:18px 22px;
+  display:flex;gap:14px;align-items:flex-start;
+  margin-top:28px;
+}
+.warn-icon{font-size:20px;flex-shrink:0;margin-top:2px;}
+.warn-text{font-size:13.5px;color:#f0c27a;line-height:1.6;}
+.warn-text strong{color:var(--warn);}
+
+/* ── FOOTER ── */
+footer{
+  border-top:1px solid var(--border);
+  padding:40px 5vw;
+  display:flex;flex-wrap:wrap;gap:20px;
+  justify-content:space-between;align-items:center;
+}
+.footer-name{
+  font-family:'Syne',sans-serif;font-weight:700;font-size:15px;
+}
+.footer-links{display:flex;gap:16px;}
+.footer-links a{
+  color:var(--muted);text-decoration:none;font-size:13px;
+  transition:color .2s;
+}
+.footer-links a:hover{color:var(--accent);}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeDown{
+  from{opacity:0;transform:translateY(-16px);}
+  to{opacity:1;transform:translateY(0);}
+}
+.fade-in{
+  opacity:0;transform:translateY(20px);
+  transition:opacity .6s ease,transform .6s ease;
+}
+.fade-in.visible{opacity:1;transform:translateY(0);}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
+  <div class="hero-inner">
+    <div class="badge">🎓 Real Client Project · Super Teacher – Edureforms Pvt Ltd</div>
+    <h1>Super<span>Installer</span><br/>Automated School<br/>Software Deployment</h1>
+    <p class="hero-sub">
+      One-click batch automation that installs 15+ educational applications
+      across 32-bit and 64-bit Windows school lab environments — zero technical expertise required.
+    </p>
+    <div class="meta-row">
+      <div class="meta-chip"><span class="icon">👩‍💻</span> Bukke JhansiBai · DevOps Engineer</div>
+      <div class="meta-chip"><span class="icon">📅</span> Aug 2025 – May 2026 (ongoing)</div>
+      <div class="meta-chip"><span class="icon">🏫</span> 2 Lab Environments</div>
+      <div class="meta-chip"><span class="icon">📦</span> 15+ Applications</div>
+    </div>
+    <div class="hero-btns">
+      <a href="documentation.html" class="btn btn-primary">📄 Full Documentation</a>
+      <a href="https://github.com/Jhansi-112/SuperInstaller-Educational-Deployment" class="btn btn-ghost" target="_blank">⬡ GitHub Profile</a>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PROBLEM SOLVED -->
+<section class="section fade-in">
+  <div class="section-label">The Challenge</div>
+  <div class="section-title">Problems Solved</div>
+  <div class="problem-grid">
+
+    <div class="problem-card">
+      <div><div class="prob-label red">❌ Problem</div><div class="prob-text">15+ apps had to be installed manually on every school PC — slow and error-prone</div></div>
+      <div class="prob-arrow">→</div>
+      <div><div class="prob-label green">✅ Solution</div><div class="prob-text">One-click <code>START_HERE.bat</code> automates the full installation sequence</div></div>
+    </div>
+
+    <div class="problem-card">
+      <div><div class="prob-label red">❌ Problem</div><div class="prob-text">MIT App Inventor Emulator failing silently — cause unknown</div></div>
+      <div class="prob-arrow">→</div>
+      <div><div class="prob-label green">✅ Solution</div><div class="prob-text">JRE, .NET, and Visual C++ auto-installed first as required prerequisites</div></div>
+    </div>
+
+    <div class="problem-card">
+      <div><div class="prob-label red">❌ Problem</div><div class="prob-text">One crashed installer would stop the entire script</div></div>
+      <div class="prob-arrow">→</div>
+      <div><div class="prob-label green">✅ Solution</div><div class="prob-text"><code>if exist</code> guards skip failed/already-installed software gracefully</div></div>
+    </div>
+
+    <div class="problem-card">
+      <div><div class="prob-label red">❌ Problem</div><div class="prob-text">General Lab (32-bit) and Da Vinci Lab (64-bit) need different software packages</div></div>
+      <div class="prob-arrow">→</div>
+      <div><div class="prob-label green">✅ Solution</div><div class="prob-text">Two separate installer folders — correct architecture builds per lab</div></div>
+    </div>
+
+    <div class="problem-card">
+      <div><div class="prob-label red">❌ Problem</div><div class="prob-text">No way to diagnose which software failed after installation</div></div>
+      <div class="prob-arrow">→</div>
+      <div><div class="prob-label green">✅ Solution</div><div class="prob-text">Per-software logs + summary <code>install_log.txt</code> generated automatically</div></div>
+    </div>
+
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- HOW IT WORKS -->
+<section class="section fade-in">
+  <div class="section-label">Installation Flow</div>
+  <div class="section-title">How It Works</div>
+  <div class="steps">
+    <div class="step">
+      <div class="step-line"></div>
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <div class="step-title">Extract & Open Folder</div>
+        <div class="step-desc">Extract <code>OneInstaller_32bit.zip</code> or <code>OneInstaller_64bit.zip</code>. Open the extracted folder and double-click <strong>Offline-Online-Software files</strong> first.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-line"></div>
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <div class="step-title">Run as Administrator</div>
+        <div class="step-desc">Right-click <code>START_HERE.bat</code> → <strong>Run as administrator</strong>. A black installer window opens and runs automatically.</div>
+        <div class="code-pill">START_HERE.bat</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-line"></div>
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <div class="step-title">Prerequisites Auto-Install</div>
+        <div class="step-desc">Script installs in correct order:</div>
+        <div class="feature-chips">
+          <span class="chip">JRE 8u461</span>
+          <span class="chip">→ .NET Framework 4.8</span>
+          <span class="chip">→ Visual C++ 2015–2022</span>
+        </div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-line"></div>
+      <div class="step-num">4</div>
+      <div class="step-body">
+        <div class="step-title">Educational Software Installs Silently</div>
+        <div class="step-desc">All apps install in sequence with no clicks needed. <code>if exist</code> guards ensure one crash doesn't stop others. Many programs show no UI window.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-num">5</div>
+      <div class="step-body">
+        <div class="step-title">Log Generated — Restart</div>
+        <div class="step-desc">After completion, <code>install_log.txt</code> is created. Desktop shortcuts appear for installed apps. Restart the computer to complete setup.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="warn-box">
+    <div class="warn-icon">⚠️</div>
+    <div class="warn-text">
+      <strong>MIT App Inventor — Windows Features Required:</strong> Open <em>Turn Windows features on or off</em> and enable
+      ✅ Virtual Machine Platform · ✅ Windows Hypervisor Platform · ✅ Hyper-V (if available).
+      On Windows 11 23H2/24H2 these are usually already enabled — you can skip this step.
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SOFTWARE TABLES -->
+<section class="section fade-in">
+  <div class="section-label">Package Contents</div>
+  <div class="section-title">Software Included</div>
+
+  <!-- Prerequisites -->
+  <h3 style="font-family:'Syne',sans-serif;font-size:14px;color:var(--muted);font-weight:600;margin-bottom:14px;text-transform:uppercase;letter-spacing:.08em;">Prerequisites — Both Packages</h3>
+  <table style="margin-bottom:32px;">
+    <thead><tr><th>Software</th><th>Version</th><th>Purpose</th></tr></thead>
+    <tbody>
+      <tr><td>Java Runtime (JRE)</td><td>8u461</td><td>Required for MIT App Inventor Emulator</td></tr>
+      <tr><td>.NET Framework</td><td>4.8</td><td>Required for MIT App Inventor Emulator</td></tr>
+      <tr><td>Visual C++ Redistributable</td><td>2015–2022</td><td>Required for MIT App Inventor Emulator</td></tr>
+    </tbody>
+  </table>
+
+  <div class="sw-tabs">
+    <div class="sw-tab active" onclick="switchTab(this,'t32')">🖥️ 32-bit Package — General Lab</div>
+    <div class="sw-tab" onclick="switchTab(this,'t64')">💻 64-bit Package — Da Vinci Lab</div>
+  </div>
+
+  <div class="sw-panel active" id="t32">
+    <table>
+      <thead><tr><th>Software</th><th>Version</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>TuxTyping</td><td>1.8.1</td><td></td></tr>
+        <tr><td>Tux Paint</td><td>Latest</td><td></td></tr>
+        <tr><td>Childsplay</td><td>1.6</td><td></td></tr>
+        <tr><td>GCompris</td><td>4.3.1</td><td></td></tr>
+        <tr><td>Krita</td><td>4.4.2</td><td></td></tr>
+        <tr><td>OpenShot</td><td>3.2.1</td><td></td></tr>
+        <tr><td>Python</td><td>3.13.2</td><td></td></tr>
+        <tr><td>MIT App Inventor Tools</td><td>30.265.0</td><td></td></tr>
+        <tr><td>Scratch</td><td>3.29.1</td><td><span class="manual-note">⬡ Manual install (internet required)</span></td></tr>
+        <tr><td>MakeCode Arcade</td><td>Latest</td><td><span class="manual-note">⬡ Manual install (internet required)</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="sw-panel" id="t64">
+    <table>
+      <thead><tr><th>Software</th><th>Version</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>GCompris</td><td>25.0</td><td></td></tr>
+        <tr><td>Krita</td><td>5.2.6</td><td></td></tr>
+        <tr><td>OpenShot</td><td>3.2.1</td><td></td></tr>
+        <tr><td>Python</td><td>3.13.2</td><td></td></tr>
+        <tr><td>MIT App Inventor Tools</td><td>30.265.0</td><td></td></tr>
+        <tr><td>Scratch</td><td>3.29.1</td><td></td></tr>
+        <tr><td>ScratchJr</td><td>Latest</td><td></td></tr>
+        <tr><td>MakeCode Arcade</td><td>Latest</td><td></td></tr>
+        <tr><td>Mind+</td><td>Latest</td><td></td></tr>
+        <tr><td>GDevelop</td><td>Latest</td><td></td></tr>
+        <tr><td>Kodu Game Lab</td><td>Latest</td><td></td></tr>
+        <tr><td>BlueJ</td><td>Latest</td><td></td></tr>
+        <tr><td>Arduino IDE</td><td>Latest</td><td></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- TESTED ON -->
+<section class="section fade-in">
+  <div class="section-label">Compatibility</div>
+  <div class="section-title">Tested On</div>
+  <div class="os-grid">
+    <div class="os-card"><div class="os-name">Windows 7</div><div class="os-badges"><span class="os-badge ok">32-bit ✅</span><span class="os-badge ok">64-bit ✅</span></div></div>
+    <div class="os-card"><div class="os-name">Windows 8 / 8.1</div><div class="os-badges"><span class="os-badge ok">32-bit ✅</span><span class="os-badge ok">64-bit ✅</span></div></div>
+    <div class="os-card"><div class="os-name">Windows 10</div><div class="os-badges"><span class="os-badge ok">32-bit ✅</span><span class="os-badge ok">64-bit ✅</span></div></div>
+    <div class="os-card"><div class="os-name">Windows 11 (21H2/22H2)</div><div class="os-badges"><span class="os-badge ok">32-bit ✅</span><span class="os-badge ok">64-bit ✅</span></div></div>
+    <div class="os-card"><div class="os-name">Windows 11 (23H2/24H2)</div><div class="os-badges"><span class="os-badge warn">MIT Inventor ⚠️</span><span class="os-badge ok">Others ✅</span></div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- DEVOPS CONCEPTS -->
+<section class="section fade-in">
+  <div class="section-label">Engineering</div>
+  <div class="section-title">DevOps Concepts Demonstrated</div>
+  <div class="concepts-grid">
+    <div class="concept-card">
+      <div class="concept-icon">♻️</div>
+      <div class="concept-title">Infrastructure as Code Mindset</div>
+      <div class="concept-desc">Repeatable, scripted deployment — run the same script on any machine and get the same result every time.</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🛡️</div>
+      <div class="concept-title">Idempotent Installs</div>
+      <div class="concept-desc"><code>if exist</code> guards make re-runs completely safe — already-installed software is skipped, not re-installed.</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">⚙️</div>
+      <div class="concept-title">Environment Separation</div>
+      <div class="concept-desc">Separate deployment packages per architecture (32-bit General Lab / 64-bit Da Vinci Lab) — no one-size-fits-all shortcuts.</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">📋</div>
+      <div class="concept-title">Automated Logging</div>
+      <div class="concept-desc">Full traceability — every install success or failure is recorded in individual logs plus a consolidated summary file.</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🔬</div>
+      <div class="concept-title">Silent Install Research</div>
+      <div class="concept-desc">Custom silent flags researched and tested per software package — not all installers support the same flags.</div>
+    </div>
+    <div class="concept-card">
+      <div class="concept-icon">🏫</div>
+      <div class="concept-title">Real Client Delivery</div>
+      <div class="concept-desc">Deployed in live school lab environments for a paying client — not a demo or tutorial project.</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+<footer>
+  <div>
+    <div class="footer-name">Bukke JhansiBai</div>
+    <div style="font-size:12px;color:var(--muted);margin-top:3px;">DevOps Engineer · Hyderabad, India</div>
+  </div>
+  <div class="footer-links">
+    <a href="documentation.html">📄 Documentation</a>
+    <a href="https://github.com/Jhansi-112/SuperInstaller-Educational-Deployment" target="_blank">GitHub</a>
+    <a href="#">LinkedIn</a>
+  </div>
+</footer>
+
+<script>
+function switchTab(el, panelId) {
+  document.querySelectorAll('.sw-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.sw-panel').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById(panelId).classList.add('active');
+}
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('visible'); });
+}, {threshold: 0.1});
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
